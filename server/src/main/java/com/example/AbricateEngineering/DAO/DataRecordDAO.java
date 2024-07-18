@@ -1,7 +1,5 @@
 package com.example.AbricateEngineering.DAO;
 
-import org.springframework.context.annotation.Primary;
-
 public class DataRecordDAO {
     private String formula;
     private Integer[] tValues = new Integer[24];

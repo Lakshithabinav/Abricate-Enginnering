@@ -3,6 +3,7 @@ package com.example.AbricateEngineering.Service;
 import org.springframework.stereotype.Service;
 import com.example.AbricateEngineering.DAO.DataRecordDAO;
 import com.example.AbricateEngineering.DAO.MaterialReport;
+import com.example.AbricateEngineering.DAO.RecipeConsompsion;
 import com.example.AbricateEngineering.Repository.DataRecordRepository;
 
 import java.util.ArrayList;
@@ -13,63 +14,54 @@ import java.util.stream.IntStream;
 @Service
 public class DataRecordService {
 
-    private static final int NUMBER_OF_VALUES = 24;
-
     private final DataRecordRepository dataRecordRepository;
     private final DataDAOService dataDAOService;
+    private final MaterialReportService materialReportService;
 
-    private List<MaterialReport> materialReports = new ArrayList<>();
+    private List<MaterialReport> materialReports;
+    private List<RecipeConsompsion> recipeConsompsions;
 
-    public DataRecordService(DataRecordRepository dataRecordRepository, DataDAOService dataDAOService) {
+    public DataRecordService(DataRecordRepository dataRecordRepository, DataDAOService dataDAOService, MaterialReportService materialReportService) {
         this.dataRecordRepository = dataRecordRepository;
         this.dataDAOService = dataDAOService;
+        this.materialReportService = materialReportService;
     }
 
-    public List<MaterialReport> findFirstFiveRecords() {
+    public List<MaterialReport> getMaterialReportBtwnReports() {
         List<DataRecordDAO> dataRecordDAOs = dataRecordRepository.findAll().stream()
                 .map(dataDAOService::convertToDAO)
                 .collect(Collectors.toList());
         materialReports = new ArrayList<>();
-        dataRecordDAOs.forEach(this::processDataRecordDAO);
-
+        materialReportService.processMaterialReports(dataRecordDAOs, materialReports);
         return materialReports;
     }
 
-    private void processDataRecordDAO(DataRecordDAO dataRecordDAO) {
-        IntStream.range(0, NUMBER_OF_VALUES).forEach(i -> {
-            String materialName = dataRecordDAO.getNValues()[i];
-            Integer achWeight = dataRecordDAO.getTValues()[i];
-            Integer setWeight =  dataRecordDAO.getAValues()[i];
-
-            if (materialName != null && achWeight != null && setWeight != null &&(achWeight!=0 || setWeight!=0)) {
-                if (materialIsPresent(materialName)) {
-                    changesInMeterialRecord(getIndexValue(materialName), achWeight, setWeight);
-                } else {
-                    addMeterialRecord(materialName, setWeight, achWeight);
-                }
-            }
-        });
+    public List<RecipeConsompsion> getRecipeConsompsions() {
+        List<DataRecordDAO> dataRecordDAOs = dataRecordRepository.findAll().stream()
+                .map(dataDAOService::convertToDAO)
+                .collect(Collectors.toList());
+        recipeConsompsions = new ArrayList<>();
+        dataRecordDAOs.forEach(dataRecordDAO -> processRecipeConsumption(dataRecordDAO, recipeConsompsions));
+        return recipeConsompsions;
     }
 
-    private void changesInMeterialRecord(int index, int achWeight, int setWeight) {
-        MaterialReport existingMaterialReport = materialReports.get(index);
-        existingMaterialReport.setAchWeight(existingMaterialReport.getAchWeight() + achWeight);
-        existingMaterialReport.setSetWeight(existingMaterialReport.getSetWeight() + setWeight);
+    private void processRecipeConsumption(DataRecordDAO dataRecordDAO, List<RecipeConsompsion> recipeConsompsions) {
+        String formulaName = dataRecordDAO.getFormula();
+        if (!isRecipeConsompsion(formulaName, recipeConsompsions)) {
+            recipeConsompsions.add(new RecipeConsompsion(formulaName, new ArrayList<>()));
+        }
+        int index = getIndexValue(formulaName, recipeConsompsions);
+        materialReportService.processSingleMaterialReport(dataRecordDAO, recipeConsompsions.get(index).getMaterialReport());
     }
 
-    private void addMeterialRecord(String name, int setWeight, int achWeight) {
-        MaterialReport newMaterialReport = new MaterialReport(name, setWeight, achWeight);
-        materialReports.add(newMaterialReport);
+    private boolean isRecipeConsompsion(String formulaName, List<RecipeConsompsion> recipeConsompsions) {
+        return recipeConsompsions.stream().anyMatch(recipeConsompsion -> recipeConsompsion.getFormulaName().equals(formulaName));
     }
 
-    private boolean materialIsPresent(String materialName) {
-        return materialReports.stream().anyMatch(mr -> mr.getMaterialName().equals(materialName));
-    }
-
-    private int getIndexValue(String materialName) {
-        return IntStream.range(0, materialReports.size())
-                .filter(i -> materialReports.get(i).getMaterialName().equals(materialName))
+    private int getIndexValue(String formulaName, List<RecipeConsompsion> recipeConsompsions) {
+        return IntStream.range(0, recipeConsompsions.size())
+                .filter(i -> recipeConsompsions.get(i).getFormulaName().equals(formulaName))
                 .findFirst()
-                .orElse(-1);  // Return -1 if not found, handle this appropriately
+                .orElse(-1);
     }
 }

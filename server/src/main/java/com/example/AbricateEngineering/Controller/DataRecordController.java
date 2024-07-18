@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.AbricateEngineering.DAO.MaterialReport;
+import com.example.AbricateEngineering.DAO.RecipeConsompsion;
 import com.example.AbricateEngineering.Service.DataRecordService;
 import java.util.List;
 
@@ -18,8 +19,12 @@ public class DataRecordController {
         this.dataRecordService = dataRecordService;
     }
 
-    @GetMapping("/first-five")
+    @GetMapping("/material-report")
     public List<MaterialReport> getFirstFiveRecords() {
-        return dataRecordService.findFirstFiveRecords();
+        return dataRecordService.getMaterialReportBtwnReports();
+    }
+    @GetMapping("/recipe-consumptions")
+    public List<RecipeConsompsion> getRecipeConsompsions() {
+        return dataRecordService.getRecipeConsompsions();
     }
 }
