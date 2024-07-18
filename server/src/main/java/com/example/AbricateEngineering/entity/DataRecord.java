@@ -1,4 +1,4 @@
-package com.example.AbricateEngineering;
+package com.example.AbricateEngineering.entity;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
