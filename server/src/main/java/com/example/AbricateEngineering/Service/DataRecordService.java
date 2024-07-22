@@ -6,6 +6,9 @@ import com.example.AbricateEngineering.DAO.MaterialReport;
 import com.example.AbricateEngineering.DAO.RecipeConsompsion;
 import com.example.AbricateEngineering.Repository.DataRecordRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +30,14 @@ public class DataRecordService {
         this.materialReportService = materialReportService;
     }
 
-    public List<MaterialReport> getMaterialReportBtwnReports() {
-        List<DataRecordDAO> dataRecordDAOs = dataRecordRepository.findAll().stream()
+    public List<MaterialReport> getMaterialReportBtwnReports(String startDateStr, String endDateStr) {
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDate startDate = LocalDate.parse(startDateStr, dateFormatter);
+    LocalDate endDate = LocalDate.parse(endDateStr, dateFormatter);
+    LocalDateTime startDateTime = startDate.atStartOfDay();
+    LocalDateTime endDateTime = endDate.atStartOfDay();
+
+        List<DataRecordDAO> dataRecordDAOs = dataRecordRepository.findAllByDateTimeBetween(startDateTime, endDateTime).stream()
                 .map(dataDAOService::convertToDAO)
                 .collect(Collectors.toList());
         materialReports = new ArrayList<>();
@@ -36,8 +45,14 @@ public class DataRecordService {
         return materialReports;
     }
 
-    public List<RecipeConsompsion> getRecipeConsompsions() {
-        List<DataRecordDAO> dataRecordDAOs = dataRecordRepository.findAll().stream()
+    public List<RecipeConsompsion> getRecipeConsompsions(String startDateStr, String endDateStr) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(startDateStr, dateFormatter);
+        LocalDate endDate = LocalDate.parse(endDateStr, dateFormatter);
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atStartOfDay();
+    
+        List<DataRecordDAO> dataRecordDAOs =  dataRecordRepository.findAllByDateTimeBetween(startDateTime, endDateTime).stream()
                 .map(dataDAOService::convertToDAO)
                 .collect(Collectors.toList());
         recipeConsompsions = new ArrayList<>();

@@ -2,8 +2,8 @@ package com.example.AbricateEngineering.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.AbricateEngineering.DAO.MaterialReport;
 import com.example.AbricateEngineering.DAO.RecipeConsompsion;
 import com.example.AbricateEngineering.Service.DataRecordService;
@@ -20,11 +20,16 @@ public class DataRecordController {
     }
 
     @GetMapping("/material-report")
-    public List<MaterialReport> getFirstFiveRecords() {
-        return dataRecordService.getMaterialReportBtwnReports();
+    public List<MaterialReport> getMaterialReportsBetweenDates(
+            @RequestParam("startDate") String startDate, 
+            @RequestParam("endDate") String endDate) {
+        return dataRecordService.getMaterialReportBtwnReports(startDate, endDate);
     }
+
     @GetMapping("/recipe-consumptions")
-    public List<RecipeConsompsion> getRecipeConsompsions() {
-        return dataRecordService.getRecipeConsompsions();
+    public List<RecipeConsompsion> getRecipeConsompsions(
+        @RequestParam("startDate") String startDate, 
+        @RequestParam("endDate") String endDate) {
+        return dataRecordService.getRecipeConsompsions(startDate, endDate);
     }
 }

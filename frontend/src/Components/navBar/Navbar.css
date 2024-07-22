@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:700');
+
+:root {
+  --main-color: #325E9F;
+}
+
+
+.outer-div {
+  height: 10px;
+  width: 100vw;
+  margin-bottom: 20px;
+  position: relative; /* For absolute positioning of children */
+  background-color: rgb(13, 13, 13);
+  position: fixed;
+  z-index: 2;
+}
+
+.nav-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  
+}
+
+.logo-div {
+  height: 50px;
+}
+
+.page-title p {
+  margin: 0;
+  padding: 0;
+  font-size: 30px;
+}
+
+.logo {
+  position: absolute;
+  height: 100px;
+  right: 10px;
+}
+
+.navigation-buttons-div {
+  background-color: white;
+  height: 50px;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+.navigation-buttons-div ul {
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  justify-content: space-around;
+  list-style: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.navigation-buttons-div li {
+  position: relative;
+  margin: 0 0px;
+}
+
+.navigation-buttons-div a {
+  text-decoration: none;
+  display: block;
+  padding: 0px 0;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(to right, var(--main-color), var(--main-color) 50%, #000000 50%);
+  background-size: 200% 100%;
+  background-position: -100%;
+  color: transparent; /* Makes text transparent to show background gradient */
+  -webkit-background-clip: text;
+  transition: background-position 0.3s ease-in-out;
+}
+
+.navigation-buttons-div a:before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 3px;
+  bottom: -10px;
+  left: 0;
+  position: absolute;
+  background: var(--main-color);
+  transition: width 0.3s ease-in-out;
+}
+
+.navigation-buttons-div a:hover {
+  background-position: 0;
+}
+
+.navigation-buttons-div a:hover:before {
+  width: 100%;
+}
+
+.navigation-buttons-div a.active {
+  background-position: 0;
+}
+
+.navigation-buttons-div a.active:before {
+  width: 100%;
+}
+
+.backgroundSticky-div{
+  height: 100px;
+  width: 100vw;
+  position: sticky;
+  z-index: 1;
+}
+@media print{
+  .navigation-buttons-div{
+    display: none;
+  }
+  .outer-div{
+    height: 20px;
+    margin-bottom: 10px;
+  }
+  .logo{
+    height: 50px;
+  }
+  .backgroundSticky-div{
+    height: 20px;
+  }
+  .outer-div{
+    position: static;
+  }
+
+}

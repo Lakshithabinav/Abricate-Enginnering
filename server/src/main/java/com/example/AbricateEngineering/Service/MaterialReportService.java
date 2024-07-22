@@ -19,10 +19,10 @@ public class MaterialReportService {
     public void processSingleMaterialReport(DataRecordDAO dataRecordDAO, List<MaterialReport> materialReports) {
         IntStream.range(0, NUMBER_OF_VALUES).forEach(i -> {
             String materialName = dataRecordDAO.getNValues()[i];
-            Integer achWeight = dataRecordDAO.getTValues()[i];
-            Integer setWeight = dataRecordDAO.getAValues()[i];
+            Integer achWeight = dataRecordDAO.getAValues()[i];
+            Integer setWeight = dataRecordDAO.getTValues()[i];
 
-            if (materialName != null && achWeight != null && setWeight != null && (achWeight != 0 || setWeight != 0)) {
+            if (materialName != null && achWeight != null && setWeight != null && (achWeight != 0 && setWeight != 0)) {
                 if (materialIsPresent(materialName, materialReports)) {
                     changesInMaterialRecord(getIndexValue(materialName, materialReports), achWeight, setWeight, materialReports);
                 } else {
